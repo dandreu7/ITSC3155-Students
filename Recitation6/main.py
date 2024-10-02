@@ -5,12 +5,17 @@ app = FastAPI()
 
 
 class Food(BaseModel):
-    id: int
-    name: str
-    price: float
+    id: int # id for food item
+    name: str # name of food item
+    price: float # price of food item
 
 
-food_instance = [Food(id=1, name="ham", price=5.2), Food(id=2, name="bread", price=2.5)]
+food_instance = [
+    Food(id=1, name="ham", price=5.2), #first food item
+    Food(id=2, name="bread", price=2.5) #second food item
+]
+
+
 
 
 @app.get("/")
@@ -52,6 +57,21 @@ def delete_item(item_id: int):
     for index, instance in enumerate(food_instance):
         if instance.id == item_id:
             del food_instance[index]
+            is_found = True
+            break
+    if not is_found:
+        return "Item not Found!"
+
+    return food_instance
+
+
+# Changes the price of an item by name using Food class
+@app.put("/items/{item_name}/price")
+def update_item_price(item_name: str, item: Food):
+    is_found = False
+    for instance in food_instance:
+        if instance.name == item_name:
+            instance.price = item.price  # Only updating the price
             is_found = True
             break
     if not is_found:
